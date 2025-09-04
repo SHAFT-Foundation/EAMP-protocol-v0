@@ -1,0 +1,74 @@
+{
+  "name": "@eamp/protocol",
+  "version": "1.0.0",
+  "description": "Extended Accessibility Metadata Protocol (EAMP) - Making accessibility a network advantage",
+  "keywords": [
+    "accessibility",
+    "wcag",
+    "metadata",
+    "ai-agents",
+    "protocol",
+    "assistive-technology",
+    "web3"
+  ],
+  "homepage": "https://eamp.sh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shaft-finance/eamp-protocol.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Shaft Finance",
+    "email": "hello@shaft.finance",
+    "url": "https://shaft.finance"
+  },
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "npm run typecheck --workspaces",
+    "clean": "npm run clean --workspaces && rm -rf node_modules",
+    "dev": "concurrently \"npm run dev --workspace=packages/javascript-sdk\" \"npm run dev --workspace=packages/react-sdk\"",
+    "docs:build": "typedoc --out docs/api packages/*/src/index.ts",
+    "docs:serve": "serve docs/api",
+    "release": "changeset publish",
+    "changeset": "changeset",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^8.2.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "prettier": "^3.0.0",
+    "serve": "^14.2.0",
+    "typedoc": "^0.25.0",
+    "typescript": "^5.1.6"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{md,json}": [
+      "prettier --write"
+    ]
+  }
+}

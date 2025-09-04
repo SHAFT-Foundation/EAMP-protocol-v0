@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.eamp.sh/v1.0/metadata.schema.json",
+  "title": "EAMP Metadata Schema v1.0",
+  "description": "JSON Schema for Extended Accessibility Metadata Protocol (EAMP) v1.0 metadata objects",
+  "type": "object",
+  "required": ["id", "type", "shortAlt", "extendedDescription"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for the resource",
+      "examples": ["chart-sales-2024", "video-demo-123", "button-submit-form"]
+    },
+    "type": {
+      "type": "string",
+      "enum": ["image", "video", "audio", "ui-element", "document"],
+      "description": "Type of content being described"
+    },
+    "eampVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "default": "1.0.0",
+      "description": "Version of the EAMP specification used"
+    },
+    "shortAlt": {
+      "type": "string",
+      "maxLength": 250,
+      "minLength": 1,
+      "description": "Concise alternative text (Layer 1 compatible)"
+    },
+    "extendedDescription": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Detailed accessibility description (Layer 2)"
+    },
+    "dataPoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DataPoint"
+      },
+      "description": "Structured data points for charts, tables, and data visualizations"
+    },
+    "transcript": {
+      "type": "string",
+      "description": "Full transcript for audio/video content"
+    },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Scene"
+      },
+      "description": "Time-coded scene descriptions for video content"
+    },
+    "visualElements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/VisualElement"
+      },
+      "description": "Description of visual elements in images"
+    },
+    "accessibilityFeatures": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "high-contrast",
+          "screen-reader-optimized", 
+          "keyboard-accessible",
+          "touch-friendly",
+          "voice-navigable",
+          "color-blind-friendly",
+          "motion-reduced",
+          "captions-available",
+          "audio-descriptions",
+          "sign-language"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "List of accessibility features supported"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "description": "Semantic tags for categorization and discovery"
+    },
+    "sourceAttribution": {
+      "type": "string",
+      "description": "Attribution information for the source content"
+    },
+    "metadataURI": {
+      "type": "string",
+      "format": "uri",
+      "description": "URI where this metadata can be retrieved"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when metadata was created"
+    },
+    "updatedAt": {
+      "type": "string", 
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when metadata was last updated"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time", 
+      "description": "ISO 8601 timestamp when metadata expires"
+    },
+    "context": {
+      "$ref": "#/$defs/Context",
+      "description": "Contextual information about the content"
+    },
+    "multilingual": {
+      "type": "object",
+      "patternProperties": {
+        "^(shortAlt|extendedDescription|transcript)_[a-z]{2}(-[A-Z]{2})?$": {
+          "type": "string"
+        }
+      },
+      "description": "Multi-language support using BCP 47 language tags"
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "DataPoint": {
+      "type": "object",
+      "required": ["label", "value"],
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable label for the data point"
+        },
+        "value": {
+          "oneOf": [
+            {"type": "string"},
+            {"type": "number"},
+            {"type": "boolean"}
+          ],
+          "description": "The actual data value"
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit of measurement (e.g., 'USD', '%', 'kg')"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category or grouping for the data point"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional metadata about the data point"
+        }
+      }
+    },
+    "Scene": {
+      "type": "object", 
+      "required": ["time", "description"],
+      "properties": {
+        "time": {
+          "type": "string",
+          "pattern": "^\\d{1,2}:\\d{2}(:\\d{2})?(-\\d{1,2}:\\d{2}(:\\d{2})?)?$",
+          "description": "Time range in format 'MM:SS' or 'HH:MM:SS' or 'start-end'"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Description of what happens in this scene"
+        },
+        "speakers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of speakers active in this scene"
+        },
+        "visualElements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Visual elements present in this scene"
+        },
+        "audioElements": {
+          "type": "array",
+          "items": {
+            "type": "string" 
+          },
+          "description": "Audio elements present in this scene"
+        }
+      }
+    },
+    "VisualElement": {
+      "type": "object",
+      "required": ["type", "description"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["text", "shape", "color", "pattern", "icon", "chart", "graph", "map", "photo", "illustration"],
+          "description": "Type of visual element"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Description of the visual element"
+        },
+        "position": {
+          "type": "string",
+          "description": "Position within the image (e.g., 'top-left', 'center', 'bottom-right')"
+        },
+        "color": {
+          "type": "string",
+          "description": "Primary color of the element"
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "description": "Relative size of the element"
+        }
+      }
+    },
+    "Context": {
+      "type": "object",
+      "properties": {
+        "pageTitle": {
+          "type": "string",
+          "description": "Title of the page containing this content"
+        },
+        "sectionHeading": {
+          "type": "string", 
+          "description": "Heading of the section containing this content"
+        },
+        "surroundingText": {
+          "type": "string",
+          "description": "Text immediately surrounding this content"
+        },
+        "purpose": {
+          "type": "string",
+          "description": "Purpose or function of this content"
+        },
+        "userTask": {
+          "type": "string",
+          "description": "User task this content supports"
+        },
+        "relatedElements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "IDs or references to related elements"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "id": "sales-chart-2024",
+      "type": "image",
+      "eampVersion": "1.0.0", 
+      "shortAlt": "Quarterly sales chart for 2024",
+      "extendedDescription": "Bar chart showing steady sales growth throughout 2024. Q1 started at $1.2M, growing to $1.5M in Q2, $1.9M in Q3, and peaking at $2.3M in Q4. The chart uses blue bars on a white background with clear gridlines.",
+      "dataPoints": [
+        {"label": "Q1", "value": 1200000, "unit": "USD"},
+        {"label": "Q2", "value": 1500000, "unit": "USD"}, 
+        {"label": "Q3", "value": 1900000, "unit": "USD"},
+        {"label": "Q4", "value": 2300000, "unit": "USD"}
+      ],
+      "visualElements": [
+        {"type": "chart", "description": "Blue vertical bars representing quarterly data", "position": "center"},
+        {"type": "text", "description": "Y-axis labeled 'Sales (USD)' with gridlines", "position": "left"},
+        {"type": "text", "description": "X-axis labeled with quarters Q1-Q4", "position": "bottom"}
+      ],
+      "accessibilityFeatures": ["high-contrast", "screen-reader-optimized"],
+      "tags": ["finance", "sales", "quarterly", "2024"],
+      "createdAt": "2024-09-04T10:30:00Z",
+      "context": {
+        "pageTitle": "Q4 2024 Financial Report",
+        "sectionHeading": "Sales Performance",
+        "purpose": "Illustrate quarterly sales growth trend"
+      }
+    }
+  ]
+}
