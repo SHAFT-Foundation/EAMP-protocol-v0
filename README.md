@@ -1,4 +1,4 @@
-# Extended Accessibility Metadata Protocol (EAMP)
+# Extended Accessibility Metadata Protocol (EAMP) 
 
 <div align="center">
   <img src="assets/eamp-logo.svg" alt="EAMP Logo" width="400" height="200" />
